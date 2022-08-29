@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-filename = '../data/fractional_crystal_100'
+filename = '../data/fractional_crystal'
 [T, Tliq, Tsol, cs1, cl1, cs2, cl2, cs3, cl3, rc] = np.loadtxt(filename).transpose()
 
 zero = np.zeros(len(T))
@@ -23,4 +23,6 @@ plt.fill_betweenx(rc, cs1 + cs2, one, color='gray', alpha=1)
 plt.xlim(0, 1)
 plt.ylim(0, 1)
 plt.xticks([])
+plt.tight_layout()
+plt.savefig('../figure/fractional_crystal_colume.png')
 plt.show()

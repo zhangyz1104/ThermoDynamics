@@ -7,7 +7,7 @@ static void set_parameters(struct All_variables *E) {
       mode==2: fractional crystallization model
       mode==3: solidus and liquidus for a binary system
   */
-  E->mode = 3;
+  E->mode = 1;
 
   // set composition parameters
   const double dS = 320;

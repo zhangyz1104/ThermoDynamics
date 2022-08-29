@@ -10,6 +10,7 @@ Tm_fs = 1350 + 120 * P
 Tm_guess = 0.5 * Tm_ol + 0.35 * Tm_px + 0.15 * Tm_fs
 
 ''' plot figure '''
+plt.figure(figsize=(5, 4))
 plt.plot(Tsol, radius, linewidth=3, c='k', linestyle='-')
 plt.plot(Tliq, radius, linewidth=3, c='k', linestyle='-')
 plt.plot(Tm_ol, radius, linewidth=2, c='g', linestyle='--', label='Tm(olv)')
@@ -18,4 +19,8 @@ plt.plot(Tm_fs, radius, linewidth=2, c='gray', linestyle='--', label='Tm(fsp)')
 # plt.plot(Tm_guess, radius, linewidth=2, c='k', linestyle='--', label='Tm(guess)')
 plt.legend()
 plt.ylim(radius[0], radius[-1])
+plt.ylabel('Radius (km)')
+plt.xlabel('Temperature (K)')
+plt.tight_layout()
+plt.savefig('../figure/solidus_liquidus.png')
 plt.show()
