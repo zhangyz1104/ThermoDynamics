@@ -1,10 +1,16 @@
 #include "global_defs.h"
 #include <stdlib.h>
-#include <stdio.h>
 
 static void set_parameters(struct All_variables *E) {
-  const double dS = 320;
+  /*  set mode
+      mode==1: equilibrium state {phi, c^{s, l}}(P, T, c0)
+      mode==2: fractional crystallization model
+      mode==3: solidus and liquidus for a binary system
+  */
+  E->mode = 3;
+
   // set composition parameters
+  const double dS = 320;
   E->comp.ncomp = 3;
   E->comp.c0[1] = 0.5;
   E->comp.c0[2] = 0.35;
@@ -25,16 +31,11 @@ static void set_parameters(struct All_variables *E) {
   E->comp.L[2] = dS * E->comp.T0[2];
   E->comp.L[3] = dS * E->comp.T0[3];
 
-  // equilibrium state
+  // set grid parameters
   E->grid.nr = 141;
   E->grid.r0 = 340;
   E->grid.r1 = 1740;
   E->grid.nT = 100;
-
-  // crystallization model
-//  E->grid.nr = 2;
-//  E->grid.r0 = 0;
-//  E->grid.r1 = 0;
 }
 
 static void init_field(struct All_variables *E) {

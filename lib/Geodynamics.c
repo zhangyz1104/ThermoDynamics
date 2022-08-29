@@ -121,13 +121,14 @@ double Tm(struct All_variables *E) {
 /* compute solidus Tsol(P, C) and liquidus Tliq(P, C) */
 void solidus_liquidus(struct All_variables *E) {
   int i;
+  FILE *fp;
 
-  E->comp.solliq_file = fopen("../data/solidus_liquidus", "w");
+  fp = fopen("../data/solidus_liquidus", "w");
 
   for (i = 1; i <= E->grid.nr; i++) {
     E->comp.Tsol[i] = Newton_iteration_T(E, 0, i);
     E->comp.Tliq[i] = Newton_iteration_T(E, 1, i);
-    fprintf(E->comp.solliq_file, "%.0f %.3f %.3f\n",
+    fprintf(fp, "%.0f %.3f %.3f\n",
             E->grid.r[i], E->comp.Tsol[i], E->comp.Tliq[i]);
   }
 }
@@ -137,15 +138,18 @@ void Equilibrium(struct All_variables *E) {
   int i, j, n;
   double T, phi, Kn;
   double cl, cs;
+  FILE *fp;
 
-  E->comp.equilibrium_file = fopen( "../data/equilibrium_state", "w");
+  solidus_liquidus(E);
+
+  fp = fopen( "../data/equilibrium_state", "w");
 
   for (i = 1; i <= E->grid.nr; i++)
     for (j = 1; j <= E->grid.nT; j++) {
       T = E->comp.Tsol[i] + (E->comp.Tliq[i] - E->comp.Tsol[i]) / (E->grid.nT - 1) * (j - 1);
       phi = max(0, min(1, Newton_iteration_phi(E, T, i)));
 
-      fprintf(E->comp.equilibrium_file, "%.3f ", T);
+      fprintf(fp, "%.3f ", T);
 
       for (n = 1; n <= E->comp.ncomp; n++) {
         Kn = K(E, T, i, n);
@@ -154,9 +158,9 @@ void Equilibrium(struct All_variables *E) {
         cs = E->comp.c0[n] / (phi / Kn + (1 - phi));
         cs = max(0, min(1, cs));
 
-        fprintf(E->comp.equilibrium_file, "%.3f %.3f ", cs, cl);
+        fprintf(fp, "%.3f %.3f ", cs, cl);
       }
-      fprintf(E->comp.equilibrium_file, "%.3f\n", phi);
+      fprintf(fp, "%.3f\n", phi);
     }
 }
 
@@ -170,8 +174,8 @@ void binary_solidus_liquidus(struct All_variables *E) {
   const int nc0 = 101;
   const double dS = 320;
 
-  E->comp.ncomp = 2;
   // set composition parameters
+  E->comp.ncomp = 2;
   E->comp.T0[1] = 2050;
   E->comp.T0[2] = 1350;
   E->comp.A[1] = 60;
@@ -182,10 +186,13 @@ void binary_solidus_liquidus(struct All_variables *E) {
   E->comp.r[3] = 10;
   E->comp.L[1] = dS * E->comp.T0[2];
   E->comp.L[3] = dS * E->comp.T0[3];
+
+  // set grid parameters
   E->grid.nr = 1;
   E->grid.P[1] = 0;
   Tm(E);
 
+  // computation and output
   for (i = 0; i < nc0; i++) {
     E->comp.c0[1] = 1 - (double) i / (nc0 - 1);
     E->comp.c0[2] = (double) i / (nc0 - 1);

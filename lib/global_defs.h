@@ -31,12 +31,10 @@ struct COMP {
   double *Tsol;
   double *Tliq;
   double *phi;
-
-  FILE *solliq_file;
-  FILE *equilibrium_file;
 };
 
 struct All_variables {
+  int mode;
   struct GRID grid;
   struct COMP comp;
 };

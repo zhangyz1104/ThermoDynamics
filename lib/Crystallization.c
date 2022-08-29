@@ -10,6 +10,9 @@ void Frac_crystal(struct All_variables *E) {
 
   const double dT = 1;
   const int nc = E->comp.ncomp;
+  E->grid.nr = 1;
+  E->grid.P[1] = 0;
+  Tm(E);
 
   // initialization
   solidus_liquidus(E);
@@ -53,7 +56,7 @@ void Frac_crystal(struct All_variables *E) {
   }
 
   // norm cumulate radius
-  fprintf(stderr, "error = %.3e", rc[its] - 1);
+  fprintf(stderr, "  (error = %.3e)", rc[its] - 1);
   for (i = 1; i <= its; i++) {
     rc[i] /= rc[its];
   }
