@@ -3,29 +3,19 @@ import matplotlib.pyplot as plt
 
 filename = '../data/solidus_liquidus'
 [radius, Tsol, Tliq] = np.loadtxt(filename).transpose()
+P = 2 * 3.14 * 6.67e-11 / 3 * 3400 ** 2 * 1e-3 * (1740 ** 2 - radius ** 2)
+Tm_ol = 2050 + 60 * P
+Tm_px = 1500 + 100 * P
+Tm_fs = 1350 + 120 * P
+Tm_guess = 0.5 * Tm_ol + 0.35 * Tm_px + 0.15 * Tm_fs
 
 ''' plot figure '''
-figure, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(5, 6), sharex=True)
-ax1.plot(T, phi, linewidth=3, c='k', linestyle='-')
-ax1.set_ylim(0, 1)
-ax1.set_ylabel('Melt fraction')
-ax1.set_title('Equilibrium state (R=' + str(r) + 'km)')
-
-ax2.plot(T, cl1, linewidth=3, c='g', linestyle='-', label='olv')
-ax2.plot(T, cl2, linewidth=3, c='b', linestyle='-', label='pxn')
-ax2.plot(T, cl3, linewidth=3, c='gray', linestyle='-', label='fsp')
-ax2.set_ylim(0, 1)
-ax2.set_ylabel('Melt composition')
-ax2.legend()
-
-ax3.plot(T, cs1, linewidth=3, c='g', linestyle='-', label='olv')
-ax3.plot(T, cs2, linewidth=3, c='b', linestyle='-', label='pxn')
-ax3.plot(T, cs3, linewidth=3, c='gray', linestyle='-', label='fsp')
-ax3.set_ylim(0, 1)
-ax3.set_ylabel('Rock composition')
-ax3.legend()
-
-plt.xlim(T[0], T[-1])
-# plt.xticks([1500, 1600, 1700, 1800], ['1500', '1600', '1700', '1800'])
-plt.xlabel('Temperature(K)')
+plt.plot(Tsol, radius, linewidth=3, c='k', linestyle='-')
+plt.plot(Tliq, radius, linewidth=3, c='k', linestyle='-')
+plt.plot(Tm_ol, radius, linewidth=2, c='g', linestyle='--', label='Tm(olv)')
+plt.plot(Tm_px, radius, linewidth=2, c='b', linestyle='--', label='Tm(pxn)')
+plt.plot(Tm_fs, radius, linewidth=2, c='gray', linestyle='--', label='Tm(fsp)')
+# plt.plot(Tm_guess, radius, linewidth=2, c='k', linestyle='--', label='Tm(guess)')
+plt.legend()
+plt.ylim(radius[0], radius[-1])
 plt.show()

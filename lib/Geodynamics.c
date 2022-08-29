@@ -122,6 +122,8 @@ double Tm(struct All_variables *E) {
 void solidus_liquidus(struct All_variables *E) {
   int i;
 
+  E->comp.solliq_file = fopen("../data/solidus_liquidus", "w");
+
   for (i = 1; i <= E->grid.nr; i++) {
     E->comp.Tsol[i] = Newton_iteration_T(E, 0, i);
     E->comp.Tliq[i] = Newton_iteration_T(E, 1, i);
@@ -135,6 +137,8 @@ void Equilibrium(struct All_variables *E) {
   int i, j, n;
   double T, phi, Kn;
   double cl, cs;
+
+  E->comp.equilibrium_file = fopen( "../data/equilibrium_state", "w");
 
   for (i = 1; i <= E->grid.nr; i++)
     for (j = 1; j <= E->grid.nT; j++) {
@@ -154,4 +158,39 @@ void Equilibrium(struct All_variables *E) {
       }
       fprintf(E->comp.equilibrium_file, "%.3f\n", phi);
     }
+}
+
+/* compute solidus and liquidus for a binary system */
+void binary_solidus_liquidus(struct All_variables *E) {
+  int i;
+  double Tsol, Tliq;
+  FILE *fp;
+
+  fp = fopen("../data/binary_sol_liq", "w");
+  const int nc0 = 101;
+  const double dS = 320;
+
+  E->comp.ncomp = 2;
+  // set composition parameters
+  E->comp.T0[1] = 2050;
+  E->comp.T0[2] = 1350;
+  E->comp.A[1] = 60;
+  E->comp.A[2] = 120;
+  E->comp.B[1] = 0;
+  E->comp.B[2] = 0;
+  E->comp.r[1] = 20;
+  E->comp.r[3] = 10;
+  E->comp.L[1] = dS * E->comp.T0[2];
+  E->comp.L[3] = dS * E->comp.T0[3];
+  E->grid.nr = 1;
+  E->grid.P[1] = 0;
+  Tm(E);
+
+  for (i = 0; i < nc0; i++) {
+    E->comp.c0[1] = 1 - (double) i / (nc0 - 1);
+    E->comp.c0[2] = (double) i / (nc0 - 1);
+    Tsol = Newton_iteration_T(E, 0,1);
+    Tliq = Newton_iteration_T(E, 1, 1);
+    fprintf(fp, "%.3f %.3f %.3f\n", E->comp.c0[1], Tsol, Tliq);
+  }
 }

@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 static void set_parameters(struct All_variables *E) {
-  const int dS = 320;
+  const double dS = 320;
   // set composition parameters
   E->comp.ncomp = 3;
   E->comp.c0[1] = 0.5;
@@ -35,9 +35,6 @@ static void set_parameters(struct All_variables *E) {
 //  E->grid.nr = 2;
 //  E->grid.r0 = 0;
 //  E->grid.r1 = 0;
-
-  E->comp.solliq_file = fopen("../data/solidus_liquidus", "w");
-  E->comp.equilibrium_file = fopen( "../data/equilibrium_state", "w");
 }
 
 static void init_field(struct All_variables *E) {
