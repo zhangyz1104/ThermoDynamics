@@ -201,3 +201,24 @@ void binary_solidus_liquidus(struct All_variables *E) {
     fprintf(fp, "%.3f %.3f %.3f\n", E->comp.c0[1], Tsol, Tliq);
   }
 }
+
+/* compute solidus and liquidus for a binary system */
+void single_solidus_liquidus(struct All_variables *E) {
+  int i;
+  FILE *fp;
+
+  fp = fopen("../data/olv_sol_liq", "w");
+
+  // set composition parameters
+  E->comp.c0[1] = 1;
+  E->comp.c0[2] = 0;
+  E->comp.c0[3] = 0;
+
+  // computation and output
+  for (i = 1; i <= E->grid.nr; i++) {
+    E->comp.Tsol[i] = Newton_iteration_T(E, 0, i);
+    E->comp.Tliq[i] = Newton_iteration_T(E, 1, i);
+    fprintf(fp, "%.0f %.3f %.3f\n",
+            E->grid.r[i], E->comp.Tsol[i], E->comp.Tliq[i]);
+  }
+}

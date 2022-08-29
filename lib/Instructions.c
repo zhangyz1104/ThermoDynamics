@@ -6,8 +6,9 @@ static void set_parameters(struct All_variables *E) {
       mode==1: equilibrium state {phi, c^{s, l}}(P, T, c0)
       mode==2: fractional crystallization model
       mode==3: solidus and liquidus for a binary system
+      mode==4: debug melting point for one component
   */
-  E->mode = 1;
+  E->mode = 4;
 
   // set composition parameters
   const double dS = 320;

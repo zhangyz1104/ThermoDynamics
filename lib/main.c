@@ -23,8 +23,10 @@ int main() {
     binary_solidus_liquidus(E);
     break;
 
-  default:fprintf(stderr, "Invalid value of this method\n");
-    return 0;
+    // debug melting point for one component
+  case 4: fprintf(stderr, "Single system\n");
+    single_solidus_liquidus(E);
+    break;
   }
 
   return 1;
